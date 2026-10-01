@@ -22,10 +22,23 @@ def get_model():
     global _model
     if _model is None:
         if not MODEL_PATH.exists():
-            raise FileNotFoundError(
-                f"Trained model not found at {MODEL_PATH}. Run src/train_model.py first."
-            )
-        _model = joblib.load(MODEL_PATH)
+            try:
+                from sklearn.model_selection import train_test_split
+                from src.train_model import prepare_data, train_models, save_model
+                
+                X, y = prepare_data()
+                X_train, X_test, y_train, y_test = train_test_split(
+                    X, y, test_size=0.20, random_state=42
+                )
+                trained_model, _ = train_models(X_train, X_test, y_train, y_test)
+                save_model(trained_model)
+                _model = trained_model
+            except Exception as train_err:
+                raise FileNotFoundError(
+                    f"Trained model not found at {MODEL_PATH}. Auto-train failed: {train_err}"
+                )
+        else:
+            _model = joblib.load(MODEL_PATH)
     return _model
 
 

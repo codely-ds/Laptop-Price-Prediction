@@ -65,13 +65,24 @@ PREPROCESSOR_PATH = (
 
 
 def prepare_data():
-
-    df = pd.read_csv(DATA_PATH)
+    if not DATA_PATH.exists():
+        raw_path = BASE_DIR / "data" / "raw" / "laptop_price.csv"
+        if raw_path.exists():
+            from src.data_cleaning import clean_data
+            from src.feature_engineering import feature_engineering
+            df_raw = pd.read_csv(raw_path, encoding="latin1")
+            df_clean = clean_data(df_raw)
+            df_fe = feature_engineering(df_clean)
+            DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
+            df_fe.to_csv(DATA_PATH, index=False)
+            df = df_fe
+        else:
+            raise FileNotFoundError(f"Data file not found at {DATA_PATH} or {raw_path}")
+    else:
+        df = pd.read_csv(DATA_PATH)
 
     X = df.drop(columns=["Price_euros"])
-
     y = df["Price_euros"]
-
     return X, y
 
 

@@ -244,7 +244,22 @@ OP_SYS_OPTIONS = ["Windows 10", "macOS", "Linux", "No OS", "Chrome OS", "Windows
 @st.cache_resource(show_spinner="Loading Machine Learning model...")
 def load_trained_model():
     if not MODEL_PATH.exists():
-        raise FileNotFoundError(f"Model file not found at: {MODEL_PATH}")
+        # Fallback: Auto-train model if file is missing in cloud container
+        try:
+            from sklearn.model_selection import train_test_split
+            from src.train_model import prepare_data, train_models, save_model
+            
+            X, y = prepare_data()
+            X_train, X_test, y_train, y_test = train_test_split(
+                X, y, test_size=0.20, random_state=42
+            )
+            trained_model, _ = train_models(X_train, X_test, y_train, y_test)
+            save_model(trained_model)
+            return trained_model
+        except Exception as train_err:
+            raise FileNotFoundError(
+                f"Model file not found at: {MODEL_PATH}. Auto-training attempt failed: {train_err}"
+            )
     return joblib.load(MODEL_PATH)
 
 @st.cache_data(show_spinner="Loading laptop dataset...")
