@@ -45,42 +45,37 @@ def extract_screen_height(resolution):
 
 def extract_storage(memory):
 
-    memory = memory.lower()
+    memory = str(memory).lower()
 
-    ssd = 0
-    hdd = 0
-    flash = 0
-    hybrid = 0
+    ssd = 0.0
+    hdd = 0.0
+    flash = 0.0
+    hybrid = 0.0
 
-    if "ssd" in memory:
-        match = re.search(r"(\d+(?:\.\d+)?)gb", memory)
+    # Split compound memory like '128GB SSD + 1TB HDD'
+    parts = memory.split("+")
 
-        if match:
-            ssd = float(match.group(1))
+    for part in parts:
+        part = part.strip()
 
-    if "hdd" in memory:
-        match = re.search(r"(\d+(?:\.\d+)?)tb", memory)
+        # Extract size in GB or TB
+        size = 0.0
+        tb_match = re.search(r"(\d+(?:\.\d+)?)\s*tb", part)
+        gb_match = re.search(r"(\d+(?:\.\d+)?)\s*gb", part)
 
-        if match:
-            hdd = float(match.group(1)) * 1024
+        if tb_match:
+            size = float(tb_match.group(1)) * 1024
+        elif gb_match:
+            size = float(gb_match.group(1))
 
-        else:
-            match = re.search(r"(\d+(?:\.\d+)?)gb", memory)
-
-            if match:
-                hdd = float(match.group(1))
-
-    if "flash" in memory:
-        match = re.search(r"(\d+(?:\.\d+)?)gb", memory)
-
-        if match:
-            flash = float(match.group(1))
-
-    if "hybrid" in memory:
-        match = re.search(r"(\d+(?:\.\d+)?)tb", memory)
-
-        if match:
-            hybrid = float(match.group(1)) * 1024
+        if "ssd" in part:
+            ssd += size
+        elif "hdd" in part:
+            hdd += size
+        elif "flash" in part:
+            flash += size
+        elif "hybrid" in part:
+            hybrid += size
 
     return pd.Series([
         ssd,
