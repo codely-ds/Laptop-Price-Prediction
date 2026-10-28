@@ -1,6 +1,5 @@
 # 💻 Laptop Price Prediction AI System 
 
-- PROJECT LIVE LINK : [ https://laptop-price-prediction746.streamlit.app ]
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.3%2B-orange.svg?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-1.0.0-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -10,6 +9,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 An end-to-end Machine Learning ecosystem that accurately estimates laptop market valuations based on hardware specifications. The project features automated data cleaning, regex-driven feature engineering, ensemble regression modeling, an asynchronous **FastAPI** backend, a modern **React.js + Vite** single-page application, and an interactive **Streamlit** analytics dashboard with real-time multi-currency conversion.
+
+PROJECT LIVE LINK : [ https://laptop-price-prediction746.streamlit.app ]
 
 ---
 
